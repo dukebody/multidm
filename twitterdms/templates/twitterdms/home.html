@@ -18,6 +18,17 @@
 					<p><a href="{{ auth_url }}" id="twitterauth">Login with Twitter</a></p>
 				{% endif %}
 
+				{% if messages %}
+				<div class="text-danger">
+					Errors:
+					<ul class="messages">
+					    {% for message in messages %}
+					    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+					    {% endfor %}
+					</ul>
+				</div>
+				{% endif %}
+
 				<form action="/" method="post">
 					<fieldset {% if not authenticated %}disabled{% endif %}>
 
@@ -51,13 +62,6 @@
 						{% csrf_token %}
 					</fieldset>
 				</form>
-				{% if messages %}
-				<ul class="messages">
-				    {% for message in messages %}
-				    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-				    {% endfor %}
-				</ul>
-				{% endif %}
 			</div>
 		</div>
 	</div>

@@ -71,10 +71,20 @@ class Home(View):
 
         api = tweepy.API(auth)
 
+        errors = False
         for user in users:
-            api.send_direct_message(user=user, text=msg)
+            try:
+                api.send_direct_message(user=user, text=msg)
+            except tweepy.TweepError, e:
+                errors = True
+                if '34' in e.reason:
+                    messages.error(request, 'User %s does not exist' % user)
+                elif '150' in e.reason:
+                    messages.error(request, 'User %s is not following you' % user)
 
-        messages.success(request, 'Message was sent')
+        if not errors:
+            messages.success(request, 'Message was sent')
+
         return redirect('/')
 
         

@@ -8,6 +8,7 @@ from django.test import TestCase
 from django.core.urlresolvers import resolve
 from django.conf import settings
 
+from tweepy.error import TweepError
 
 from twitterdms.views import Home
 
@@ -170,3 +171,26 @@ class AuthTests(TestCase):
 
         self.assertFalse(mock_send_dm.called)
         self.assertContains(response, 'not valid Twitter usernames')
+
+    @mock.patch('tweepy.API.send_direct_message', side_effect=TweepError(u'34'))
+    def test_send_unexistent_user_fails_nicely(self, mock_send_dm):
+        self.authenticate()
+
+        users = '@unexistent_user'
+        dmtext = 'Test message'
+
+        response = self.client.post('/', {'users': users, 'dmtext': dmtext }, follow=True)
+
+        self.assertContains(response, 'does not exist')
+
+    @mock.patch('tweepy.API.send_direct_message', side_effect=TweepError(u'150'))
+    def test_send_nonfollower_fails_nicely(self, mock_send_dm):
+        self.authenticate()
+
+        users = '@nytimes'
+        dmtext = 'Test message'
+
+        response = self.client.post('/', {'users': users, 'dmtext': dmtext }, follow=True)
+
+
+        self.assertContains(response, 'is not following you')
