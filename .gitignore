@@ -42,3 +42,9 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
+
+# FS dir file
+.directory
+
+# Config file
+twitter/config.py
