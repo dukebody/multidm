@@ -147,5 +147,26 @@ class AuthTests(TestCase):
 
         self.assertGreater(len(msgs),0)
 
-    # @mock.patch('tweepy.API.send_direct_message')
-    # def test_sending_too_long_msg_fails(self, mock_send_dm):
+    @mock.patch('tweepy.API.send_direct_message')
+    def test_sending_too_long_msg_fails(self, mock_send_dm):
+        self.authenticate()
+
+        users = settings.TWITTER_TEST_USERDMS[0]
+        dmtext = 'This message is larger than 140 chars. This message is larger than 140 chars. This message is larger than 140 chars. This message is larger than 140 chars.'
+
+        response = self.client.post('/', {'users': users, 'dmtext': dmtext }, follow=True)
+
+        self.assertFalse(mock_send_dm.called)
+        self.assertContains(response, 'Message is too long')
+
+    @mock.patch('tweepy.API.send_direct_message')
+    def test_send_invalid_users_fails(self, mock_send_dm):
+        self.authenticate()
+
+        users = 'this is not a valid, '
+        dmtext = 'Test message'
+
+        response = self.client.post('/', {'users': users, 'dmtext': dmtext }, follow=True)
+
+        self.assertFalse(mock_send_dm.called)
+        self.assertContains(response, 'not valid Twitter usernames')

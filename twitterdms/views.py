@@ -9,6 +9,8 @@ import tweepy.api
 
 from django.conf import settings
 
+from twitterdms.forms import DMForm
+
 consumer_key = settings.TWITTER_CONSUMER_KEY
 consumer_secret = settings.TWITTER_CONSUMER_SECRET
 
@@ -20,7 +22,6 @@ class Home(View):
         auth_url = None
 
         session = request.session
-
 
         if not authenticated:
             auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -45,8 +46,8 @@ class Home(View):
                 auth_url = auth.get_authorization_url()
                 session['request_token'] = (auth.request_token.key, auth.request_token.secret)
 
-
-        return render(request, 'twitterdms/home.html', {'authenticated': self.isAuthenticated(), 'auth_url': auth_url})
+        form = DMForm()
+        return render(request, 'twitterdms/home.html', {'authenticated': self.isAuthenticated(), 'auth_url': auth_url, 'form': form})
 
 
     def post(self, request):
@@ -54,8 +55,13 @@ class Home(View):
         if not self.isAuthenticated():
             return HttpResponse('You need to authenticate first!')
 
-        users = request.POST['users']
-        msg = request.POST['dmtext']
+        form = DMForm(request.POST)
+
+        if not form.is_valid():
+            return render(request, 'twitterdms/home.html', {'authenticated': self.isAuthenticated(), 'auth_url': '', 'form': form})
+
+        users = form.cleaned_data['users']
+        msg = form.cleaned_data['dmtext']
 
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         access_token = request.session['access_token']
@@ -65,13 +71,13 @@ class Home(View):
 
         api = tweepy.API(auth)
 
-        users = [u.strip() for u in users.split(',')]
-
         for user in users:
             api.send_direct_message(user=user, text=msg)
 
         messages.success(request, 'Message was sent')
         return redirect('/')
+
+        
 
 
     def isAuthenticated(self):

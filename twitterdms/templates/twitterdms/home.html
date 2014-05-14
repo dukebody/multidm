@@ -20,20 +20,34 @@
 
 				<form action="/" method="post">
 					<fieldset {% if not authenticated %}disabled{% endif %}>
-						<p class="form-group">
+
+						<p class="form-group {% if form.users.errors %}has-error{% endif %}">
 							<label for="users">Users (separated by commas):</label> <br>
-							<textarea class="form-control" 
-								name="users" id="users" 
-								placeholder="@user1, @user2, @user3..."
-								cols="50" rows="10"></textarea>
+							{{ form.users }}
+							{% if form.users.errors %}
+							    <ul>
+							    {% for error in form.users.errors %}
+							        <li class="text-danger">{{ error|escape }}</li>
+							    {% endfor %}
+							    </ul>
+							{% endif %}
 						</p>
 
-						<p class="form-group">
-							<label for="dmtext">DM (up to 140 chars)</label> <br>
-							<textarea class="form-control" name="dmtext" id="dmtext" cols="50" rows="4" placeholder="Don't get over 140 chars!"></textarea>
+						<p class="form-group {% if form.dmtext.errors %}has-error{% endif %}">
+							<label for="dmtext">DM (up to 140 chars):</label> <br>
+							{{ form.dmtext }}
+							{% if form.dmtext.errors %}
+							    <ul>
+							    {% for error in form.dmtext.errors %}
+							        <li class="text-danger">{{ error|escape }}</li>
+							    {% endfor %}
+							    </ul>
+							{% endif %}
 						</p>
+
 
 						<input class="btn btn-primary btn-lg" style="float:right" type="submit" name="submit" value="Send Message" />
+
 						{% csrf_token %}
 					</fieldset>
 				</form>
