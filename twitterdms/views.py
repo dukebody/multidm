@@ -81,6 +81,8 @@ class Home(View):
                     messages.error(request, 'User %s does not exist' % user)
                 elif '150' in e.reason:
                     messages.error(request, 'User %s is not following you' % user)
+                else:
+                    messages.error(request, 'Unkown error when sending message to %s' % user)
 
         if not errors:
             messages.success(request, 'Message was sent')

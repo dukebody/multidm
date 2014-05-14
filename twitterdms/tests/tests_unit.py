@@ -194,3 +194,14 @@ class AuthTests(TestCase):
 
 
         self.assertContains(response, 'is not following you')
+
+    @mock.patch('tweepy.API.send_direct_message', side_effect=TweepError(u'666'))
+    def test_send_unknown_error_fails_nicely(self, mock_send_dm):
+        self.authenticate()
+
+        users = '@whatever'
+        dmtext = 'Test message'
+
+        response = self.client.post('/', {'users': users, 'dmtext': dmtext }, follow=True)
+
+        self.assertContains(response, 'Unkown error when sending message to')
