@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Send DMs</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="/static/twitterdms/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3 jumbotron">
+				<h1>Send Multiple DMs</h1>
+				{% if authenticated %}
+					<p>Authenticated</p>
+				{% else %}
+					<p><a href="{{ auth_url }}" id="twitterauth">Login with Twitter</a></p>
+				{% endif %}
+
+				<form action="/" method="post">
+					<fieldset {% if not authenticated %}disabled{% endif %}>
+						<p class="form-group">
+							<label for="users">Users (separated by commas):</label> <br>
+							<textarea class="form-control" 
+								name="users" id="users" 
+								placeholder="@user1, @user2, @user3..."
+								cols="50" rows="10"></textarea>
+						</p>
+
+						<p class="form-group">
+							<label for="dmtext">DM (up to 140 chars)</label> <br>
+							<textarea class="form-control" name="dmtext" id="dmtext" cols="50" rows="4" placeholder="Don't get over 140 chars!"></textarea>
+						</p>
+
+						<input class="btn btn-primary btn-lg" style="float:right" type="submit" name="submit" value="Send Message" />
+						{% csrf_token %}
+					</fieldset>
+				</form>
+				{% if messages %}
+				<ul class="messages">
+				    {% for message in messages %}
+				    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+				    {% endfor %}
+				</ul>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</body>
+</html>
