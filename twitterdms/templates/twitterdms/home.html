@@ -22,8 +22,7 @@
 				{% endif %}
 
 				{% if messages %}
-				<div class="text-danger">
-					Errors:
+				<div>
 					<ul class="messages">
 					    {% for message in messages %}
 					    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>

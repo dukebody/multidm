@@ -78,14 +78,14 @@ class Home(View):
             except tweepy.TweepError, e:
                 errors = True
                 if '34' in e.reason:
-                    messages.error(request, 'User %s does not exist' % user)
+                    messages.error(request, 'User %s does not exist' % user, extra_tags='text-danger')
                 elif '150' in e.reason:
-                    messages.error(request, 'User %s is not following you' % user)
+                    messages.error(request, 'User %s is not following you' % user, extra_tags='text-danger')
                 else:
-                    messages.error(request, 'Unkown error when sending message to %s' % user)
+                    messages.error(request, 'Unkown error when sending message to %s' % user, extra_tags='text-danger')
 
         if not errors:
-            messages.success(request, 'Message was sent')
+            messages.success(request, 'Message was sent', extra_tags='text-success')
 
         return redirect('/')
 
