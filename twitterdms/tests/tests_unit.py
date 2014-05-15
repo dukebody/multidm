@@ -75,6 +75,14 @@ class AuthTests(TestCase):
 
         self.assertContains(response, 'Authenticated')
 
+    def test_user_can_logout(self):
+        self.authenticate()
+
+        response = self.client.get('/logout', follow=True)
+
+        self.assertContains(response, 'Login with Twitter')
+
+
 
     @mock.patch('tweepy.API.send_direct_message')
     def test_not_authenticated_cannot_send_dms(self, mock_send_dm):

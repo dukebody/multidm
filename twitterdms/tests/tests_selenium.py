@@ -5,10 +5,9 @@ from random import randint
 from selenium import webdriver
 
 from django.conf import settings
-from django.contrib.staticfiles.testing import StaticLiveServerCase
+from django.test import LiveServerTestCase
 
-
-class SeleniumTests(StaticLiveServerCase):
+class SeleniumTests(LiveServerTestCase):
 
     def authenticate(self):
         # John gets to the app homepage
@@ -56,6 +55,14 @@ class SeleniumTests(StaticLiveServerCase):
 
         self.assertTrue(users_input.is_enabled())
         self.assertTrue(dmtext_input.is_enabled())
+
+    def test_can_logout(self):
+        self.authenticate()
+
+        logout_button = self.browser.find_element_by_id('logout')
+        logout_button.click()
+
+        self.assertIn('Login with Twitter', self.browser.page_source)
 
 
 

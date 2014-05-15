@@ -13,7 +13,10 @@
 			<div class="col-md-6 col-md-offset-3 jumbotron">
 				<h1>Send Multiple DMs</h1>
 				{% if authenticated %}
-					<p>Authenticated</p>
+					<p>
+						Authenticated 
+						<a href="{% url 'logout' %}"><button id="logout" type="button" class="btn btn-primary btn-sm">Logout</button></a>
+					</p>
 				{% else %}
 					<p><a href="{{ auth_url }}" id="twitterauth">Login with Twitter</a></p>
 				{% endif %}

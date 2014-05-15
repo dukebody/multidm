@@ -94,3 +94,10 @@ class Home(View):
 
     def isAuthenticated(self):
         return bool(self.request.session.get('access_token')) and bool(self.request.session.get('access_token_secret'))
+
+
+def logout(request):
+    session = request.session
+    session.clear()
+
+    return redirect('/')
