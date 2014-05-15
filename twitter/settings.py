@@ -84,4 +84,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-from config import *
+from twitter.config import *
