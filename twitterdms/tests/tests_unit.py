@@ -82,8 +82,6 @@ class AuthTests(TestCase):
 
         self.assertContains(response, 'Login with Twitter')
 
-
-
     @mock.patch('tweepy.API.send_direct_message')
     def test_not_authenticated_cannot_send_dms(self, mock_send_dm):
         users = settings.TWITTER_TEST_USERDMS[0]

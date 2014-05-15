@@ -150,3 +150,14 @@ class SeleniumTests(LiveServerTestCase):
             504,
             delta=5
         )
+
+
+    def test_clean_url_after_login(self):
+        """
+        Check that the user ends up in the root URL, without get
+        params from oauth.
+        """
+
+        self.authenticate()
+
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/')

@@ -37,6 +37,8 @@ class Home(View):
                     session['access_token'] = auth.access_token.key
                     session['access_token_secret'] = auth.access_token.secret
 
+                    return redirect('/')
+
                 except tweepy.TweepError:
                     print 'Error! Failed to get access token.'
 
