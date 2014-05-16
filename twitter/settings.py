@@ -10,6 +10,8 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import dj_database_url
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -70,7 +72,7 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True
+USE_I18N = False
 
 USE_L10N = True
 
@@ -83,4 +85,37 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-from twitter.config import *
+## TWITTER CONFIG
+
+TWITTER_CONSUMER_KEY = os.environ.get('TWITTER_CONSUMER_KEY')
+TWITTER_CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET')
+
+TWITTER_TEST_USER = os.environ.get('TWITTER_TEST_USER')
+TWITTER_TEST_PASSWORD = os.environ.get('TWITTER_TEST_PASSWORD')
+
+TWITTER_TEST_USERDMS = os.environ.get('TWITTER_TEST_USERDMS').split(',')
+
+
+## HEROKU
+
+# Parse database configuration from $DATABASE_URL
+
+DATABASES['default'] =  dj_database_url.config(default='sqlite:////' + os.path.join(BASE_DIR, 'db.sqlite3'))
+
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Allow all host headers
+ALLOWED_HOSTS = ['*']
+
+# Static asset configuration
+
+STATIC_ROOT = 'staticfiles'
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+
+

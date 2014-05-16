@@ -12,10 +12,15 @@ How to install
 ----------------
 
 1. Clone this repository.
-2. Using Python 2.7, ``pip install requirements.txt``  (Django 1.6 and tweepy)
-3. Copy ``twitter/config.example.py`` to ``twitter/config.py`` and enter the consumer key and secret for your own Twitter app (you will have to [create one] if you have not already done so).
-4. Start the Django app either using the dev server (``python manage.py runserver``) or any other more advanced server config you want.
-5. Enjoy!
+2. Using Python 2.7, ``pip install requirements.txt``.
+3. Set the following environment variables: 
+    1. ``DJANGO_SETTINGS_MODULE``: Python import path to the setting file. twitter.settings by default.
+    2. ``TWITTER_CONSUMER_KEY`` and ``TWITTER_CONSUMER_SECRET``: key and secret of your own Twitter app (you will have to [create one] if you have not already done so).
+4. (Optional) If you want to run the automated tests:
+    1. ``TWITTER_TEST_USER`` and ``TWITTER_TEST_PASSWORD``: Twitter user and password for the Selenium tests.
+    2. ``TWITTER_TEST_USERDMS``: users to try to send DMs to, separated by commas.
+5. Start the Django app either using the dev server (``python manage.py runserver``) or any other more advanced server config you want. For example for gunicorn: ``foreman start``. You can also deploy this app to Heroku setting the previous environment vars in your app.
+6. Enjoy!
 
 [TweetGuru MultiDM]:http://tweetguru.net/multi/
 [create one]:http://apps.twitter.com
