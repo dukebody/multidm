@@ -9,10 +9,10 @@ https://docs.djangoproject.com/en/dev/howto/deployment/wsgi/
 
 import os
 
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "twitter.settings")
+
 from dj_static import Cling
 
 from django.core.wsgi import get_wsgi_application
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "twitter.settings")
 
 application = Cling(get_wsgi_application())
