@@ -118,4 +118,8 @@ STATICFILES_DIRS = (
 )
 
 
-
+# Support for local_settings, helps with some deployments
+try:
+  from local_settings import *
+except ImportError:
+  pass
