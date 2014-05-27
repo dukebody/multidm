@@ -59,8 +59,8 @@ class SeleniumTests(LiveServerTestCase):
         
         self.assertEqual(self.browser.current_url, self.live_server_url + '/')
 
-        # John gets to the app homepage
-        self.browser.get(self.live_server_url)
+        # John sees his username as authenticated in the webapp
+        self.assertIn('Authenticated as @%s' % settings.TWITTER_TEST_USER, self.browser.page_source)
 
         # Now the inputs are not disabled anymore
         users_input = self.browser.find_element_by_name('users')

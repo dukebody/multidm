@@ -18,10 +18,11 @@ consumer_secret = settings.TWITTER_CONSUMER_SECRET
 
 class Home(View):
     def get(self, request):
-        authenticated = self.isAuthenticated()
-        auth_url = None
-
         session = request.session
+        
+        authenticated = self.isAuthenticated()
+        me_username = session.get('me_username')
+        auth_url = None
 
         if not authenticated:
             auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -37,6 +38,9 @@ class Home(View):
                     session['access_token'] = auth.access_token.key
                     session['access_token_secret'] = auth.access_token.secret
 
+                    # Store the logged in username
+                    session['me_username'] = auth.get_username()
+
                     return redirect('/')
 
                 except tweepy.TweepError:
@@ -49,7 +53,8 @@ class Home(View):
                 session['request_token'] = (auth.request_token.key, auth.request_token.secret)
 
         form = DMForm()
-        return render(request, 'twitterdms/home.html', {'authenticated': self.isAuthenticated(), 'auth_url': auth_url, 'form': form})
+
+        return render(request, 'twitterdms/home.html', {'authenticated': self.isAuthenticated(), 'auth_url': auth_url, 'form': form, 'me_username': me_username})
 
 
     def post(self, request):

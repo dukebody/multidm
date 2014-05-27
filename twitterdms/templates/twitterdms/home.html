@@ -14,7 +14,7 @@
 				<h1>Send Multiple DMs</h1>
 				{% if authenticated %}
 					<p>
-						Authenticated 
+						Authenticated as @{{me_username}}
 						<a href="{% url 'logout' %}"><button id="logout" type="button" class="btn btn-primary btn-sm">Logout</button></a>
 					</p>
 				{% else %}
