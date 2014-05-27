@@ -5,7 +5,6 @@ from django.views.generic import View
 from django.contrib import messages
 
 import tweepy
-import tweepy.api
 
 from django.conf import settings
 
@@ -52,7 +51,7 @@ class Home(View):
                 auth_url = auth.get_authorization_url()
                 session['request_token'] = (auth.request_token.key, auth.request_token.secret)
 
-        form = DMForm()
+        form = DMForm(request)
 
         return render(request, 'twitterdms/home.html', {'authenticated': self.isAuthenticated(), 'auth_url': auth_url, 'form': form, 'me_username': me_username})
 
@@ -62,13 +61,10 @@ class Home(View):
         if not self.isAuthenticated():
             return HttpResponse('You need to authenticate first!')
 
-        form = DMForm(request.POST)
+        form = DMForm(request, request.POST)
 
         if not form.is_valid():
             return render(request, 'twitterdms/home.html', {'authenticated': self.isAuthenticated(), 'auth_url': '', 'form': form})
-
-        users = form.cleaned_data['users']
-        msg = form.cleaned_data['dmtext']
 
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         access_token = request.session['access_token']
@@ -76,12 +72,21 @@ class Home(View):
 
         auth.set_access_token(access_token, access_token_secret)
 
-        api = tweepy.API(auth)
+        self.api = tweepy.API(auth)
+
+        source = form.cleaned_data['users_source']
+        msg = form.cleaned_data['dmtext']
+        
+        if source == 'Manual':
+            users = form.cleaned_data['users']
+        else:  # source = 'List' -- get users from lists
+            users = self.getUsersFromListIDs(form.cleaned_data['lists'])
+
 
         errors = False
         for user in users:
             try:
-                api.send_direct_message(user=user, text=msg)
+                self.api.send_direct_message(user=user, text=msg)
             except tweepy.TweepError, e:
                 errors = True
                 if '34' in e.reason:
@@ -101,6 +106,19 @@ class Home(View):
 
     def isAuthenticated(self):
         return bool(self.request.session.get('access_token')) and bool(self.request.session.get('access_token_secret'))
+
+
+    def getUsersFromListIDs(self, listIDs):
+        users = set()
+
+        for listID in listIDs:
+            list_members = self.api.get_list(list_id=listID)
+            for member in list_members:
+                users.add(member.screen_name)
+
+        return users
+
+
 
 
 def logout(request):

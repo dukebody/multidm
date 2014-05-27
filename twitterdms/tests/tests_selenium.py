@@ -69,6 +69,11 @@ class SeleniumTests(LiveServerTestCase):
         self.assertTrue(users_input.is_enabled())
         self.assertTrue(dmtext_input.is_enabled())
 
+        # John decides to send the message to explicit users
+        # selecting the appropriate radio button
+        users_manual = self.browser.find_element_by_css_selector("input[type='radio'][value='Manual']")
+        users_manual.click()
+
         # John fills the form with multiple users, separated by commas and a message
         users = ', '.join(settings.TWITTER_TEST_USERDMS)
         users_input.send_keys(users)
@@ -91,6 +96,43 @@ class SeleniumTests(LiveServerTestCase):
 
         self.assertIn('Login with Twitter', self.browser.page_source)
 
+
+    @mock.patch('tweepy.API.send_direct_message')
+    def test_send_dm_to_list(self, mock_send_dm):
+
+        # John gets to the front page and authenticates
+        self.browser.get(self.live_server_url)
+
+        self.authenticate()
+
+        # John decides to send the message to a list
+        # selecting the appropriate radio button
+        users_list = self.browser.find_element_by_css_selector("input[type='radio'][value='List']")
+        users_list.click()
+
+        # John selects the Twitter lists he wants to send the DM to
+        ## This only works if the test user has at least 1 list
+        self.browser.find_element_by_id('lists_0').click()
+
+        # He enters the msg to send
+        dmtext_input = self.browser.find_element_by_name('dmtext')
+        dmtext_input.send_keys('Hello world!')
+
+        # John clicks on the "Send" button
+        self.browser.find_element_by_name('submit').click()
+
+
+        # John sees an info msg confirming that the msg was sent
+        self.assertIn('Message was sent', self.browser.page_source)
+
+        # Check that the messages were sent
+        self.assertTrue(mock_send_dm.called)
+
+        # And he logs out
+        logout_button = self.browser.find_element_by_id('logout')
+        logout_button.click()
+
+        self.assertIn('Login with Twitter', self.browser.page_source)
 
     def test_layout_and_styling(self):
         # Edith goes to the home page

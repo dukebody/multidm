@@ -34,8 +34,29 @@
 				<form action="/" method="post">
 					<fieldset {% if not authenticated %}disabled{% endif %}>
 
+						<p class="form-group {% if form.users_source.errors %}has-error{% endif %}">
+							<label for="users">Users source:</label> <br>
+							<label>
+								<input type="radio" class="form-control"
+								 name="users_source" value="Manual">
+								Manual
+							</label>
+							<label>
+								<input type="radio" class="form-control"
+									name="users_source" value="List">
+								List
+							</label>
+							{% if form.users_source.errors %}
+							    <ul>
+							    {% for error in form.users_source.errors %}
+							        <li class="text-danger">{{ error|escape }}</li>
+							    {% endfor %}
+							    </ul>
+							{% endif %}
+						</p>
+
 						<p class="form-group {% if form.users.errors %}has-error{% endif %}">
-							<label for="users">Users (separated by commas):</label> <br>
+							<label for="users">Usernames (separated by commas):</label> <br>
 							{{ form.users }}
 							{% if form.users.errors %}
 							    <ul>
