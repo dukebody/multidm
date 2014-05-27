@@ -1,8 +1,6 @@
 import os
 import importlib
 import mock
-from random import randint
-
 
 from django.test import TestCase
 from django.core.urlresolvers import resolve
@@ -15,6 +13,8 @@ from twitterdms.views import Home
 
 
 # Create your tests here.
+
+DMTEXT = 'Hello World!'
 
 
 class HomePageTests(TestCase):
@@ -85,8 +85,7 @@ class AuthTests(TestCase):
     @mock.patch('tweepy.API.send_direct_message')
     def test_not_authenticated_cannot_send_dms(self, mock_send_dm):
         users = settings.TWITTER_TEST_USERDMS[0]
-        dmtext = 'Hello world r %d' % randint(1, 200)
-        response = self.client.post('/', {'users': users, 'dmtext': dmtext })
+        response = self.client.post('/', {'users': users, 'dmtext': DMTEXT })
 
         self.assertFalse(mock_send_dm.called)
 
@@ -99,8 +98,7 @@ class AuthTests(TestCase):
         self.authenticate()
 
         users = settings.TWITTER_TEST_USERDMS[0]
-        dmtext = 'Hello world r %d' % randint(1, 200)
-        response = self.client.post('/', {'users': users, 'dmtext': dmtext }, follow=True)
+        response = self.client.post('/', {'users': users, 'dmtext': DMTEXT }, follow=True)
 
         self.assertTrue(mock_send_dm.called)
 
@@ -113,8 +111,7 @@ class AuthTests(TestCase):
         self.authenticate()
 
         users = ', '.join(settings.TWITTER_TEST_USERDMS)
-        dmtext = 'Hello world r %d' % randint(1, 200)
-        response = self.client.post('/', {'users': users, 'dmtext': dmtext })
+        response = self.client.post('/', {'users': users, 'dmtext': DMTEXT })
         
         # Check that the messages were sent
         self.assertEquals(mock_send_dm.call_count, 2)
@@ -136,8 +133,7 @@ class AuthTests(TestCase):
         self.authenticate()
 
         users = settings.TWITTER_TEST_USERDMS[0]
-        dmtext = 'Hello world r %d' % randint(1, 200)
-        response = self.client.post('/', {'users': users, 'dmtext': dmtext })
+        response = self.client.post('/', {'users': users, 'dmtext': DMTEXT })
 
         self.assertRedirects(response, '/')
 
@@ -147,8 +143,7 @@ class AuthTests(TestCase):
         self.authenticate()
 
         users = settings.TWITTER_TEST_USERDMS[0]
-        dmtext = 'Hello world r %d' % randint(1, 200)
-        response = self.client.post('/', {'users': users, 'dmtext': dmtext }, follow=True)
+        response = self.client.post('/', {'users': users, 'dmtext': DMTEXT }, follow=True)
 
         msgs = response.context.get('messages')
 
@@ -171,9 +166,8 @@ class AuthTests(TestCase):
         self.authenticate()
 
         users = 'this is not a valid, '
-        dmtext = 'Test message'
 
-        response = self.client.post('/', {'users': users, 'dmtext': dmtext }, follow=True)
+        response = self.client.post('/', {'users': users, 'dmtext': DMTEXT }, follow=True)
 
         self.assertFalse(mock_send_dm.called)
         self.assertContains(response, 'not valid Twitter usernames')
@@ -183,9 +177,8 @@ class AuthTests(TestCase):
         self.authenticate()
 
         users = '@unexistent_user'
-        dmtext = 'Test message'
 
-        response = self.client.post('/', {'users': users, 'dmtext': dmtext }, follow=True)
+        response = self.client.post('/', {'users': users, 'dmtext': DMTEXT }, follow=True)
 
         self.assertContains(response, 'does not exist')
 
@@ -194,9 +187,8 @@ class AuthTests(TestCase):
         self.authenticate()
 
         users = '@nytimes'
-        dmtext = 'Test message'
 
-        response = self.client.post('/', {'users': users, 'dmtext': dmtext }, follow=True)
+        response = self.client.post('/', {'users': users, 'dmtext': DMTEXT }, follow=True)
 
 
         self.assertContains(response, 'is not following you')
@@ -206,8 +198,7 @@ class AuthTests(TestCase):
         self.authenticate()
 
         users = '@whatever'
-        dmtext = 'Test message'
 
-        response = self.client.post('/', {'users': users, 'dmtext': dmtext }, follow=True)
+        response = self.client.post('/', {'users': users, 'dmtext': DMTEXT }, follow=True)
 
         self.assertContains(response, 'Unkown error when sending message to')
