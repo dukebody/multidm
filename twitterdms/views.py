@@ -112,7 +112,7 @@ class Home(View):
         users = set()
 
         for listID in listIDs:
-            list_members = self.api.get_list(list_id=listID)
+            list_members = self.api.get_list(list_id=listID).members()
             for member in list_members:
                 users.add(member.screen_name)
 
