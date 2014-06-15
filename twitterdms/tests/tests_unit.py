@@ -21,6 +21,9 @@ LISTS_CHOICES = (
         ('1', 'List 2'),
     )
 
+TWITTER_ACCESS_TOKEN = getattr(settings, 'TWITTER_ACCESS_TOKEN', '')
+TWITTER_ACCESS_TOKEN_SECRET = getattr(settings, 'TWITTER_ACCESS_TOKEN_SECRET', '')
+
 
 class HomePageTests(TestCase):
 
@@ -40,8 +43,8 @@ class AuthTests(TestCase):
 
     def authenticate(self):
         session = self.client.session
-        session['access_token'] = 'aaa'
-        session['access_token_secret'] = 'bbb'
+        session['access_token'] = TWITTER_ACCESS_TOKEN
+        session['access_token_secret'] = TWITTER_ACCESS_TOKEN_SECRET
         session.save()
 
     def setUp(self):
