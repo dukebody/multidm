@@ -4,6 +4,8 @@ from django.conf import settings
 
 import tweepy
 
+from twitterdms import memory_cache
+
 consumer_key = settings.TWITTER_CONSUMER_KEY
 consumer_secret = settings.TWITTER_CONSUMER_SECRET
 
@@ -96,7 +98,7 @@ class DMForm(forms.Form):
 
         auth.set_access_token(access_token, access_token_secret)
 
-        api = tweepy.API(auth)
+        api = tweepy.API(auth, cache=memory_cache)
 
         lists = api.lists_all()
 

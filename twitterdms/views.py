@@ -8,12 +8,13 @@ import tweepy
 
 from django.conf import settings
 
+from twitterdms import memory_cache
 from twitterdms.forms import DMForm
 
 consumer_key = settings.TWITTER_CONSUMER_KEY
 consumer_secret = settings.TWITTER_CONSUMER_SECRET
 
-# Create your views here.
+
 
 class Home(View):
     def get(self, request):
@@ -72,7 +73,7 @@ class Home(View):
 
         auth.set_access_token(access_token, access_token_secret)
 
-        self.api = tweepy.API(auth)
+        self.api = tweepy.API(auth, cache=memory_cache)
 
         source = form.cleaned_data['users_source']
         msg = form.cleaned_data['dmtext']
