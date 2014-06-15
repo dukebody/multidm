@@ -5,6 +5,7 @@
 	<title>Send DMs</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="/static/twitterdms/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="/static/twitterdms/twitterdms.css" rel="stylesheet" media="screen">
 
 </head>
 <body>
@@ -37,13 +38,11 @@
 						<p class="form-group {% if form.users_source.errors %}has-error{% endif %}">
 							<label>Users source:</label> <br>
 							<label for="source-manual">
-								<input type="radio" class="form-control"
-								 name="users_source" id="source-manual" value="Manual">
+								<input type="radio" name="users_source" id="source-manual" value="Manual">
 								Manual
 							</label>
 							<label for="source-list">
-								<input type="radio" class="form-control"
-									name="users_source" id="source-list" value="List">
+								<input type="radio" name="users_source" id="source-list" value="List">
 								List
 							</label>
 							{% if form.users_source.errors %}
@@ -56,6 +55,7 @@
 						</p>
 
 						{% if form.getListsChoices %}
+						Select one or more lists to send the message to:
 						{{ form.lists }}
 						{% endif %}
 

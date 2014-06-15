@@ -55,7 +55,7 @@ class DMForm(forms.Form):
         self.fields['lists'] = forms.MultipleChoiceField(
             label='Lists',
             required=False,
-            widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-control'}),
+            widget=forms.CheckboxSelectMultiple(attrs={'class': 'list-inline'}),
             error_messages={
                 'invalid_choice': 'Please select at least one valid list to send the message to'
             },
