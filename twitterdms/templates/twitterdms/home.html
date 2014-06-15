@@ -1,11 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" ng-app>
 <head>
 	<meta charset="UTF-8">
 	<title>Send DMs</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="/static/twitterdms/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<link href="/static/twitterdms/twitterdms.css" rel="stylesheet" media="screen">
+	<script type="text/javascript" src="/static/twitterdms/angular.min.js"></script>
 
 </head>
 <body>
@@ -38,11 +39,11 @@
 						<p class="form-group {% if form.users_source.errors %}has-error{% endif %}">
 							<label>Users source:</label> <br>
 							<label for="source-manual">
-								<input type="radio" name="users_source" id="source-manual" value="Manual">
+								<input type="radio" name="users_source" id="source-manual" value="Manual" ng-model="source">
 								Manual
 							</label>
 							<label for="source-list">
-								<input type="radio" name="users_source" id="source-list" value="List">
+								<input type="radio" name="users_source" id="source-list" value="List" ng-model="source">
 								List
 							</label>
 							{% if form.users_source.errors %}
@@ -54,12 +55,14 @@
 							{% endif %}
 						</p>
 
+						<div ng-show="source=='List'">
 						{% if form.getListsChoices %}
 						Select one or more lists to send the message to:
 						{{ form.lists }}
 						{% endif %}
+						</div>
 
-						<p class="form-group {% if form.users.errors %}has-error{% endif %}">
+						<p ng-show="source=='Manual'" class="form-group {% if form.users.errors %}has-error{% endif %}">
 							<label for="id_users">Usernames (separated by commas):</label> <br>
 							{{ form.users }}
 							{% if form.users.errors %}
