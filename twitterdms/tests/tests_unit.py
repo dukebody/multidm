@@ -45,6 +45,7 @@ class AuthTests(TestCase):
         session = self.client.session
         session['access_token'] = TWITTER_ACCESS_TOKEN
         session['access_token_secret'] = TWITTER_ACCESS_TOKEN_SECRET
+        session['me_username'] = 'myusername'
         session.save()
 
     def setUp(self):
@@ -77,12 +78,24 @@ class AuthTests(TestCase):
 
 
     @mock.patch('tweepy.API.lists_all', return_value=[])
-    def test_already_authenticated_show_authenticated(self, la_mock):
+    def test_already_authenticated_show_authenticated_get(self, la_mock):
         self.authenticate()
 
         response = self.client.get('/')
 
-        self.assertContains(response, 'Authenticated')
+        self.assertContains(response, 'Authenticated as @')
+        self.assertNotContains(response, 'nobody')
+
+
+    @mock.patch('tweepy.API.lists_all', return_value=[])
+    def test_already_authenticated_show_authenticated_post(self, la_mock):
+        self.authenticate()
+
+        response = self.client.post('/')
+
+        self.assertContains(response, 'Authenticated as @')
+        self.assertNotContains(response, 'nobody')
+
 
     @mock.patch('tweepy.API.lists_all', return_value=[])
     def test_user_can_logout(self, la_mock):

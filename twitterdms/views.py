@@ -21,7 +21,7 @@ class Home(View):
         session = request.session
         
         authenticated = self.isAuthenticated()
-        me_username = session.get('me_username')
+        me_username = self.getUsername(request)
         auth_url = None
 
         if not authenticated:
@@ -62,10 +62,12 @@ class Home(View):
         if not self.isAuthenticated():
             return HttpResponse('You need to authenticate first!')
 
+        me_username = self.getUsername(request)
         form = DMForm(request, request.POST)
 
         if not form.is_valid():
-            return render(request, 'twitterdms/home.html', {'authenticated': self.isAuthenticated(), 'auth_url': '', 'form': form})
+            return render(request, 'twitterdms/home.html', {'authenticated': self.isAuthenticated(), 'auth_url': '', 
+                                                            'form': form, 'me_username': me_username})
 
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         access_token = request.session['access_token']
@@ -118,6 +120,22 @@ class Home(View):
                 users.add(member.screen_name)
 
         return users
+
+    def getUsername(self, request):
+        if not self.isAuthenticated():
+            return ''
+
+        session = request.session
+
+        if not 'me_username' in session:
+            auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+            access_token = request.session['access_token']
+            access_token_secret = request.session['access_token_secret']
+
+            auth.set_access_token(access_token, access_token_secret)
+            session['me_username'] = auth.get_username()
+
+        return session['me_username']
 
 
 
