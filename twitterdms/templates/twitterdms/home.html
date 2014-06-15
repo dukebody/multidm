@@ -10,12 +10,12 @@
 <body>
 	<div class="container">
 		<div class="row">
-			<div class="col-md-6 col-md-offset-3 jumbotron">
+			<div class="col-md-6 col-md-offset-3">
 				<h1>Send Multiple DMs</h1>
 				{% if authenticated %}
 					<p>
 						Authenticated as @{{me_username}}
-						<a href="{% url 'logout' %}"><button id="logout" type="button" class="btn btn-primary btn-sm">Logout</button></a>
+						<a href="{% url 'logout' %}" id="logout" class="btn btn-primary btn-sm">Logout</a>
 					</p>
 				{% else %}
 					<p><a href="{{ auth_url }}" id="twitterauth">Login with Twitter</a></p>
@@ -35,15 +35,15 @@
 					<fieldset {% if not authenticated %}disabled{% endif %}>
 
 						<p class="form-group {% if form.users_source.errors %}has-error{% endif %}">
-							<label for="users">Users source:</label> <br>
-							<label>
+							<label>Users source:</label> <br>
+							<label for="source-manual">
 								<input type="radio" class="form-control"
-								 name="users_source" value="Manual">
+								 name="users_source" id="source-manual" value="Manual">
 								Manual
 							</label>
-							<label>
+							<label for="source-list">
 								<input type="radio" class="form-control"
-									name="users_source" value="List">
+									name="users_source" id="source-list" value="List">
 								List
 							</label>
 							{% if form.users_source.errors %}
@@ -60,7 +60,7 @@
 						{% endif %}
 
 						<p class="form-group {% if form.users.errors %}has-error{% endif %}">
-							<label for="users">Usernames (separated by commas):</label> <br>
+							<label for="id_users">Usernames (separated by commas):</label> <br>
 							{{ form.users }}
 							{% if form.users.errors %}
 							    <ul>
@@ -72,7 +72,7 @@
 						</p>
 
 						<p class="form-group {% if form.dmtext.errors %}has-error{% endif %}">
-							<label for="dmtext">DM (up to 140 chars):</label> <br>
+							<label for="id_dmtext">DM (up to 140 chars):</label> <br>
 							{{ form.dmtext }}
 							{% if form.dmtext.errors %}
 							    <ul>
