@@ -55,6 +55,10 @@
 							{% endif %}
 						</p>
 
+						{% if form.getListsChoices %}
+						{{ form.lists }}
+						{% endif %}
+
 						<p class="form-group {% if form.users.errors %}has-error{% endif %}">
 							<label for="users">Usernames (separated by commas):</label> <br>
 							{{ form.users }}
